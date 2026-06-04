@@ -17,6 +17,13 @@
 </head>
 <body>
 
+<!-- ===== WALLPAPER SLIDESHOW ===== -->
+<div id="bgSlideshow">
+  <div class="bg-layer" id="bgLayer1"></div>
+  <div class="bg-layer" id="bgLayer2"></div>
+  <div id="bgDim"></div>
+</div>
+
 <!-- ===== SIDEBAR ===== -->
 <aside class="sidebar" id="sidebar">
   <div class="sidebar-scroll">
@@ -525,6 +532,42 @@
           <div class="color-swatch" data-color="#d97706" style="background:#d97706"></div>
           <div class="color-swatch" data-color="#dc2626" style="background:#dc2626"></div>
           <div class="color-swatch" data-color="#db2777" style="background:#db2777"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Background Wallpaper</div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span>Enable Slideshow</span>
+          <span class="settings-sub-label" style="font-size:11px;color:var(--text-muted);font-weight:400;margin-top:1px">Rotates beautiful photos automatically</span>
+        </div>
+        <label class="switch"><input type="checkbox" id="wallpaperToggle"><span class="slider"></span></label>
+      </div>
+      <div id="wallpaperOptions" style="display:none">
+        <div class="settings-row">
+          <div class="settings-label"><span>Switch Every</span></div>
+          <div class="toggle-group" id="wallpaperIntervalGroup">
+            <button class="toggle-opt active" data-interval="5">5 min</button>
+            <button class="toggle-opt" data-interval="10">10 min</button>
+            <button class="toggle-opt" data-interval="30">30 min</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label"><span>Overlay Dim</span></div>
+          <div class="toggle-group" id="wallpaperDimGroup">
+            <button class="toggle-opt" data-dim="0.2">Light</button>
+            <button class="toggle-opt active" data-dim="0.45">Medium</button>
+            <button class="toggle-opt" data-dim="0.65">Dark</button>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div class="settings-label">
+            <span>Skip Image</span>
+            <span class="settings-sub-label" style="font-size:11px;color:var(--text-muted);font-weight:400;margin-top:1px">Load the next photo now</span>
+          </div>
+          <button class="settings-action-btn" id="wallpaperNextBtn" style="width:auto;padding:6px 14px">↺ Next Photo</button>
         </div>
       </div>
     </div>
