@@ -3683,7 +3683,8 @@ function applyAccent(color) {
 }
 function applyPack(pack) {
   if (pack !== 'brutal' && pack !== 'atelier' && pack !== 'holodeck' && pack !== 'mono'
-      && pack !== 'aurora' && pack !== 'ember' && pack !== 'sakura') pack = 'default';
+      && pack !== 'aurora' && pack !== 'ember' && pack !== 'sakura'
+      && pack !== 'obsidian' && pack !== 'aura') pack = 'default';
   S.settings.pack = pack;
   document.documentElement.dataset.pack = pack;
   const link = document.getElementById('theme-pack-css');

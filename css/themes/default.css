@@ -871,6 +871,8 @@ body.grid-view-mode .ws-bm-add-card.qa-add-btn{min-height:37px;padding:6px 10px;
 .pack-swatch-aurora{background:linear-gradient(135deg,#050912 0%,#050912 50%,#4ade80 50%,#4ade80 100%)}
 .pack-swatch-ember{background:linear-gradient(135deg,#100c08 0%,#100c08 50%,#f97316 50%,#f97316 100%)}
 .pack-swatch-sakura{background:linear-gradient(135deg,#fdf5f8 0%,#fdf5f8 50%,#db2777 50%,#db2777 100%)}
+.pack-swatch-obsidian{background:linear-gradient(135deg,#050507 0%,#050507 50%,#38bdf8 50%,#38bdf8 100%)}
+.pack-swatch-aura{background:linear-gradient(135deg,#080612 0%,#080612 50%,#a855f7 50%,#ec4899 100%)}
 .pack-meta{display:flex;flex-direction:column;gap:2px;min-width:0}
 .pack-name{font-weight:700;font-size:13px}
 .pack-desc{font-size:11px;color:var(--text-muted)}
@@ -896,13 +898,18 @@ body.dragging-bookmark .folder-modal-subfolder{transition:border-color .12s ease
 .csel-option.csel-depth-1{padding-left:22px}
 
 /* ===== WALLPAPER SLIDESHOW ===== */
-#bgSlideshow{position:fixed;inset:0;z-index:-1;pointer-events:none}
+#bgSlideshow{position:fixed;inset:0;z-index:1;pointer-events:none}
 .bg-layer{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;opacity:0;transition:opacity 2.5s ease-in-out;will-change:opacity}
 #bgDim{position:absolute;inset:0;background:rgba(0,0,0,0.45);opacity:0;transition:opacity .6s ease}
 
 /* When wallpaper is active — body bg disappears, sidebar keeps its own bg */
 body.has-wallpaper{background:transparent !important}
 body.has-wallpaper #bgDim{opacity:1}
+/* .main must be above bgSlideshow (z-index:1), sidebar already has z-index:10 */
+body.has-wallpaper .main{position:relative;z-index:2}
+/* Hero bg clears so wallpaper shows through */
+body.has-wallpaper .hero-bg{background:none !important}
+body.has-wallpaper .hero::after{opacity:0}
 
 /* Sidebar stays opaque — no change needed since it has var(--bg-sidebar) */
 
