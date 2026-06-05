@@ -1,6 +1,6 @@
 ﻿'use strict';
 // =============================================
-//  FIREFLY TAB — app.js v2 (All bugs fixed)
+//  TABDECK — app.js  (production-ready)
 // =============================================
 
 // ===== CHROME API WRAPPER =====
@@ -331,7 +331,7 @@ const FALLBACK_QUOTES = [
 
 // ===== STATE =====
 let S = {
-  user:          { name:'Ahsan', avatarColor:'#7c3aed', googlePicture:null, googleName:null },
+  user:          { name:'User', avatarColor:'#7c3aed', googlePicture:null, googleName:null },
   workspaces:    [],
   activeWsId:    1,
   wsData:        {},   // {[wsId]: {quickAccess,notes,tasks}}
@@ -810,8 +810,9 @@ function weatherEmoji(c) {
   if (c===116) return '⛅';
   if (c===119||c===122) return '☁️';
   if (c>=386&&c<=395) return '⛈️';  // thundery (must check before rain)
-  if (c>=323&&c<=377) return '❄️';  // snow/sleet (correct wttr.in range, before rain)
-  if (c>=176&&c<=321) return '🌧️'; // rain/drizzle
+  if (c===227||c===230) return '❄️'; // blowing snow / blizzard (below rain range, must be explicit)
+  if (c>=323&&c<=377) return '❄️';  // snow/sleet/ice pellets
+  if (c>=176&&c<=321) return '🌧️'; // rain/drizzle/fog
   return '🌤️';
 }
 
@@ -824,7 +825,7 @@ async function checkGoogleIdentity() {
     // Try to get Google profile picture
     fetchGoogleProfilePicture();
     // Update name from email only if no real name has been set yet
-    if (!S.user.name || S.user.name === 'Ahsan' || (!S.user.googleName && !S.user.name)) {
+    if (!S.user.name || S.user.name === 'User' || (!S.user.googleName && !S.user.name)) {
       const nameParts = (info.email.split('@')[0] || 'User').replace(/[._]/g,' ');
       S.user.name = nameParts.charAt(0).toUpperCase() + nameParts.slice(1);
       updateGreeting();
@@ -3681,7 +3682,8 @@ function applyAccent(color) {
   try { localStorage.setItem('__td_accent', color); } catch(e) {}
 }
 function applyPack(pack) {
-  if (pack !== 'brutal' && pack !== 'atelier' && pack !== 'holodeck' && pack !== 'mono') pack = 'default';
+  if (pack !== 'brutal' && pack !== 'atelier' && pack !== 'holodeck' && pack !== 'mono'
+      && pack !== 'aurora' && pack !== 'ember' && pack !== 'sakura') pack = 'default';
   S.settings.pack = pack;
   document.documentElement.dataset.pack = pack;
   const link = document.getElementById('theme-pack-css');
@@ -3744,6 +3746,9 @@ function _wpNextUrl() {
   return `https://picsum.photos/id/${id}/1920/1080`;
 }
 
+let _wpRetries = 0;
+const _WP_MAX_RETRIES = 5;
+
 function _wpLoadNext() {
   const url = _wpNextUrl();
   const nextLayerNum = _wpActiveLayer === 1 ? 2 : 1;
@@ -3753,6 +3758,7 @@ function _wpLoadNext() {
 
   const img = new Image();
   img.onload = () => {
+    _wpRetries = 0; // reset on success
     nextEl.style.backgroundImage = `url("${url}")`;
     // Let browser paint the new background before fading in
     requestAnimationFrame(() => {
@@ -3764,7 +3770,11 @@ function _wpLoadNext() {
       }, 300);
     });
   };
-  img.onerror = () => { _wpIdxPointer++; _wpLoadNext(); }; // skip bad IDs
+  img.onerror = () => {
+    _wpIdxPointer++;
+    if (++_wpRetries < _WP_MAX_RETRIES) _wpLoadNext(); // skip bad IDs, give up after 5
+    else _wpRetries = 0; // exhausted retries, wait for next scheduled rotation
+  };
   img.src = url;
 }
 
@@ -3837,6 +3847,7 @@ function importData(file) {
       renderAll();
       applyTheme(S.settings.theme);
       applyAccent(S.settings.accentColor);
+      initWallpaper();
       showToast('Data imported successfully!', 'success');
     } catch {
       showToast('Invalid file format', 'error');
@@ -4386,13 +4397,14 @@ function setupEventListeners() {
       S.weatherLocation = null;
       S.workspaces.forEach(ws => S.wsData[ws.id] = DEFAULT_WS_DATA(ws.id));
       S.trash = [];
-      S.settings = { pack:'default', theme:'dark', accentColor:'#7c3aed', clockFormat:'12', showSeconds:true, cardGlow:'glow', widgets:{notes:true,tasks:true,quote:true,timer:true} };
+      S.settings = { pack:'default', theme:'dark', accentColor:'#7c3aed', clockFormat:'12', showSeconds:true, cardGlow:'glow', widgets:{notes:true,tasks:true,quote:true,timer:true}, wallpaper:{ enabled:false, interval:5, dim:0.45 } };
       save();
       renderAll();
       applyPack('default');
       applyTheme('dark');
       applyAccent('#7c3aed');
       applyCardGlow('glow');
+      initWallpaper();
       showToast('All data cleared', 'success');
     });
   });
